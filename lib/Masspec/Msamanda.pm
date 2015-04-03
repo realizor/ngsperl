@@ -67,7 +67,7 @@ sub perform {
     open( OUT, ">$realpbsfile" ) or die $!;
 
     print OUT "$pbsDesc
-#SBATCH -o $reallog
+#SBATCH --output=$reallog
 
 $path_file
 
