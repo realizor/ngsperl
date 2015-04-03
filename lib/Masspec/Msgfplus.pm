@@ -52,10 +52,12 @@ sub perform {
     my $pbsFile = $self->pbsfile( $pbsDir, $sampleName );
     $pbsFile = substr($pbsFile,0,-4);
     my $log     = $self->logfile( $logDir, $sampleName );
+    $log = substr($log,0,-4);
     
     
     foreach (@isotopes) {
     	my $realpbsfile = $pbsFile."_".$_.".pbs";
+    	my $reallog = $log."_".$_.".log";
     	my $pbsName = basename($realpbsfile);
     	my $whichcfg = "cfgfile_".$_;
     	my $cfgfile = $config->{$section}{$whichcfg} or die "define ${section}::cfgfile first";
@@ -65,8 +67,7 @@ sub perform {
     open( OUT, ">$realpbsfile" ) or die $!;
 
     print OUT "$pbsDesc
-#PBS -o $log
-#PBS -j oe
+#SBATCH -o $reallog
 
 $path_file
 
