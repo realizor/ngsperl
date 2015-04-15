@@ -322,7 +322,7 @@ my $def = {
   msgfplus_parameter_N15  => "/scratch/cqs/zhangp2/parameter/msgfplus_mods_N15.txt",
 
   #software options
-  msgfplus_option   => "-t 50ppm -ti -1,2 -tda 1 -m 3 -inst 3 -e 1 -protocol 5 -ntt 2 -minCharge 2 -maxCharge 4 -n 1 -addFeatures 1",
+  msgfplus_option   => "-t 50ppm -ti -1,2 -tda 0 -m 3 -inst 3 -e 1 -protocol 5 -ntt 2 -minCharge 2 -maxCharge 4 -n 1 -addFeatures 1",
 
 };
 
