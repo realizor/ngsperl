@@ -14,7 +14,7 @@ my $def = {
 
   #software settings
   msamanda_executable => "/home/zhangp2/local/bin/msamanda/MSAmanda.exe",
-  msgfplus_executable => "/scratch/cqs/shengq1/local/bin/MSGFPlus/MSGFPlus.jar",
+  msgfplus_executable => "/home/zhangp2/local/bin/msgfplus/MSGFPlus.jar",
 
   #databases
   proteindb         => "/scratch/cqs/zhangp2/reference/wormbase/protein/Caenorhabditis_elegans.WBcel235.pep.all.REVERSED.fasta",
