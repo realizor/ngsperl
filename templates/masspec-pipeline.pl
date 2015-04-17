@@ -17,7 +17,7 @@ my $def = {
   msgfplus_executable => "/home/zhangp2/local/bin/msgfplus/MSGFPlus.jar",
 
   #databases
-  proteindb         => "/scratch/cqs/zhangp2/reference/wormbase/protein/Caenorhabditis_elegans.WBcel235.pep.all.REVERSED.fasta",
+  proteindb         => "/scratch/cqs/zhangp2/reference/wormbase/protein/Caenorhabditis_elegans.WBcel235.pep.all_sap.mutation.REVERSED.fasta",
   
   #N15labeloption
   N15    =>  1,
