@@ -9,13 +9,14 @@ use CQS::PBS;
 use CQS::ClassFactory;
 use CQS::StringUtils;
 use CQS::CQSDebug;
+use Data::Dumper;
 
 require Exporter;
 our @ISA = qw(Exporter);
 
 our %EXPORT_TAGS = (
   'all' => [
-    qw(get_option get_java get_cluster get_parameter get_param_file parse_param_file has_raw_files get_raw_files get_raw_files2 get_run_command get_option_value get_pair_groups get_pair_groups_names get_cqstools)]
+    qw(get_option get_java get_cluster get_parameter get_param_file get_directory parse_param_file has_raw_files get_raw_files get_raw_files2 get_run_command get_option_value get_pair_groups get_pair_groups_names get_cqstools)]
 );
 
 our @EXPORT = ( @{ $EXPORT_TAGS{'all'} } );
@@ -153,6 +154,38 @@ sub get_param_file {
   return ($result);
 }
 
+#get parameter which indicates a file. If required, not defined or not exists, die. If defined but not exists, die.
+#returned file either undefined or exists.
+sub get_directory {
+  my ( $config, $section, $name, $required ) = @_;
+
+  die "section $section was not defined!" if !defined $config->{$section};
+  die "parameter name must be defined!" if !defined $name;
+
+  my $result = $config->{$section}{$name};
+
+  if ($required) {
+    if ( !defined $result ) {
+      die "$name was not defined!";
+    }
+
+    if ( !is_debug() && !-e $result ) {
+      die "$name $result defined but not exists!";
+    }
+  }
+  else {
+    if ( defined($result) ) {
+      if ( $result eq "" ) {
+        undef($result);
+      }
+      elsif ( !is_debug() && !-e $result ) {
+        die "$name $result defined but not exists!";
+      }
+    }
+  }
+  return ($result);
+}
+
 sub get_cqstools {
   my ( $config, $section, $required ) = @_;
   my $cqsFile = get_param_file( $config->{$section}{cqs_tools}, "cqs_tools", 0 );
@@ -252,11 +285,11 @@ sub do_get_raw_files {
           }
 
           if ( $index == ( $partlength - 1 ) || defined $config->{ $parts[ $index + 1 ] } ) {
-            $refmap->{ $parts[$index] } = { config => $config, pattern => $pattern };
+            $refmap->{ $index} = { config => $config, section => $parts[$index], pattern => $pattern };
             $index++;
           }
           else {
-            $refmap->{ $parts[$index] } = { config => $config, pattern => $parts[ $index + 1 ] };
+            $refmap->{ $index } = { config => $config, section => $parts[$index], pattern => $parts[ $index + 1 ] };
             $index += 2;
           }
         }
@@ -265,7 +298,7 @@ sub do_get_raw_files {
         if ( !defined $config->{$targetSection} ) {
           die "undefined section $targetSection";
         }
-        $refmap->{$targetSection} = { config => $config, pattern => $pattern };
+        $refmap->{1} = { config => $config, section => $targetSection, pattern => $pattern };
       }
     }
     else {
@@ -291,29 +324,32 @@ sub do_get_raw_files {
         }
 
         if ( $index == ( $partlength - 2 ) || ref( $parts[ $index + 2 ] ) eq 'HASH' ) {
-          $refmap->{$targetSection} = { config => $targetConfig, pattern => $pattern };
+          $refmap->{$index } = { config => $targetConfig, section => $targetSection, pattern => $pattern };
           $index += 2;
         }
         else {
-          $refmap->{$targetSection} = { config => $targetConfig, pattern => $parts[ $index + 2 ] };
+          $refmap->{$index} = { config => $targetConfig, section => $targetSection, pattern => $parts[ $index + 2 ] };
           $index += 3;
         }
       }
+      
+      #print Dumper($refmap);
     }
 
     my %result = ();
-    for my $refsec ( keys %{$refmap} ) {
-      my $values       = $refmap->{$refsec};
+    for my $index ( keys %{$refmap} ) {
+      my $values       = $refmap->{$index};
       my $targetConfig = $values->{config};
+      my $section = $values->{section};
       my $pattern      = $values->{pattern};
 
       my %myres = ();
-      if ( defined $targetConfig->{$refsec}{class} ) {
-        my $myclass = instantiate( $targetConfig->{$refsec}{class} );
-        %myres = %{ $myclass->result( $targetConfig, $refsec, $pattern ) };
+      if ( defined $targetConfig->{$section}{class} ) {
+        my $myclass = instantiate( $targetConfig->{$section}{class} );
+        %myres = %{ $myclass->result( $targetConfig, $section, $pattern ) };
       }
       else {
-        my ( $res, $issource ) = do_get_raw_files( $targetConfig, $refsec, 1 );
+        my ( $res, $issource ) = do_get_raw_files( $targetConfig, $section, 1 );
         %myres = %{$res};
       }
 
