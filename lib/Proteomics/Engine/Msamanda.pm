@@ -27,7 +27,7 @@ sub perform {
   my ( $self, $config, $section ) = @_;
 
   my ( $task_name, $path_file, $pbsDesc, $target_dir, $logDir, $pbsDir, $resultDir, $option, $sh_direct, $cluster ) = get_parameter( $config, $section );
-  my $proteindb = $config->{$section}{proteindb} or die "define ${section}::proteindb first";
+  my $database = $config->{$section}{database} or die "define ${section}::proteindb first";
   my %mgffiles = %{ get_raw_files( $config, $section)};
   my $executable = $config->{$section}{executable};
   my $cfgfile = $config->{$section}{cfgfile};
@@ -60,7 +60,7 @@ cd $resultDir
 	      my $resultFile = change_extension( $sname, ".msamanda.txt" );
 	
 	      print OUT "if [ ! -s $resultFile ]; then
-	  mono $executable $sampleFile $proteindb $cfgfile $resultFile
+	  mono $executable $sampleFile $database $cfgfile $resultFile
 	fi
 	";
 	}
