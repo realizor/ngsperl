@@ -7,12 +7,14 @@ use CQS::FileUtils;
 use CQS::SystemUtils;
 use CQS::ConfigUtils;
 
-my $target_dir     = "/scratch/cqs/shengq1/proteomics/20150608_shifted_precursor";
+my $target_dir     = "/scratch/cqs/zhangp2/project/tiger/shifted_precursor";
 my $msgf_jar       = "/scratch/cqs/shengq1/local/bin/MSGFPlus/MSGFPlus.jar";
 my $msamanda_exe   = "/home/zhangp2/local/bin/msamanda/MSAmanda.exe";
 my $proteomicstools = "/home/shengq1/proteomicstools/ProteomicsTools.exe";
 my $mod_file       = "/scratch/cqs/shengq1/local/bin/MSGFPlus/Mods.txt";
-my $msamanda_config = "/scratch/cqs/zhangp2/parameter/msamanda_settings_shifted.xml";
+my $msamanda_config_1dalton = "/scratch/cqs/zhangp2/parameter/msamanda_settings_shifted_1dalton.xml";
+my $msamanda_config_005dalton = "/scratch/cqs/zhangp2/parameter/msamanda_settings_shifted_005dalton.xml";
+my $msamanda_config_002dalton = "/scratch/cqs/zhangp2/parameter/msamanda_settings_shifted_002dalton.xml";
 my $database_human = "/gpfs21/scratch/cqs/shengq1/proteomics/shifted/rev_Human_uniprot_sprot_v20120613.fasta";
 my $database_yeast = "/gpfs21/scratch/cqs/shengq1/proteomics/shifted/rev_Yeast_uniprot_v20120613.fasta";
 my $database_ecoli = "/gpfs21/scratch/cqs/shengq1/proteomics/shifted/rev_Ecoli_uniprot_v20120613_P4431.fasta";
@@ -30,13 +32,13 @@ my $config = {
       "Elite_CIDIT_Human.plus10dalton"  => ["/gpfs21/scratch/cqs/shengq1/proteomics/shifted/Elite_CIDIT_Human.plus10dalton.mgf"],
     },
     executable => $msamanda_exe,
-    cfgfile => $msamanda_config,
+    cfgfile => $msamanda_config_1dalton,
     database  => $database_human,
     sh_direct => 0,
     pbs       => {
       "email"    => $email,
       "nodes"    => "1:ppn=8",
-      "walltime" => "72",
+      "walltime" => "24",
       "mem"      => "40gb"
     },
   },
@@ -50,13 +52,13 @@ my $config = {
       "Fusion_CIDIT_Human.plus10dalton"  => ["/gpfs21/scratch/cqs/shengq1/proteomics/shifted/Fusion_CIDIT_Human.plus10dalton.mgf"],
     },
     executable => $msamanda_exe,
-    cfgfile => $msamanda_config,
+    cfgfile => $msamanda_config_1dalton,
     database  => $database_human,
     sh_direct => 0,
     pbs       => {
       "email"    => $email,
       "nodes"    => "1:ppn=8",
-      "walltime" => "72",
+      "walltime" => "24",
       "mem"      => "40gb"
     },
   },
@@ -70,13 +72,13 @@ my $config = {
       "Fusion_HCDIT_Yeast.plus10dalton"  => ["/gpfs21/scratch/cqs/shengq1/proteomics/shifted/Fusion_HCDIT_Yeast.plus10dalton.mgf"],
     },
     executable => $msamanda_exe,
-    cfgfile => $msamanda_config,
+    cfgfile => $msamanda_config_1dalton,
     database  => $database_yeast,
     sh_direct => 0,
     pbs       => {
       "email"    => $email,
       "nodes"    => "1:ppn=8",
-      "walltime" => "72",
+      "walltime" => "24",
       "mem"      => "40gb"
     },
   },
@@ -90,13 +92,13 @@ my $config = {
       "Fusion_HCDOT_Human.plus10dalton"  => ["/gpfs21/scratch/cqs/shengq1/proteomics/shifted/Fusion_HCDOT_Human.plus10dalton.mgf"],
     },
     executable => $msamanda_exe,
-    cfgfile => $msamanda_config,
+    cfgfile => $msamanda_config_002dalton,
     database  => $database_human,
     sh_direct => 0,
     pbs       => {
       "email"    => $email,
       "nodes"    => "1:ppn=8",
-      "walltime" => "72",
+      "walltime" => "24",
       "mem"      => "40gb"
     },
   },
@@ -110,13 +112,13 @@ my $config = {
       "QExactive_HCDOT_Human.plus10dalton"  => ["/gpfs21/scratch/cqs/shengq1/proteomics/shifted/QExactive_HCDOT_Human.plus10dalton.mgf"],
     },
     executable => $msamanda_exe,
-    cfgfile => $msamanda_config,
+    cfgfile => $msamanda_config_002dalton,
     database  => $database_human,
     sh_direct => 0,
     pbs       => {
       "email"    => $email,
       "nodes"    => "1:ppn=8",
-      "walltime" => "72",
+      "walltime" => "24",
       "mem"      => "40gb"
     },
   },
@@ -130,20 +132,20 @@ my $config = {
       "QTOF_Ecoli.plus10dalton"  => ["/gpfs21/scratch/cqs/shengq1/proteomics/shifted/QTOF_Ecoli.plus10dalton.mgf"],
     },
     executable => $msamanda_exe,
-    cfgfile => $msamanda_config,
+    cfgfile => $msamanda_config_005dalton,
     database  => $database_ecoli,
     sh_direct => 0,
     pbs       => {
       "email"    => $email,
       "nodes"    => "1:ppn=8",
-      "walltime" => "72",
+      "walltime" => "24",
       "mem"      => "40gb"
     },
   },
-  MSGFPlus_Distiller => {
+  Msamanda_Distiller => {
     class      => "Proteomics::Distiller::PSMDistiller",
     perform    => 1,
-    target_dir => "${target_dir}/PSMDistillerMSGFPlus",
+    target_dir => "${target_dir}/PSMDistillerMsamanda",
     option     => "",
     source_ref     => [ "Elite_CIDIT_Human_Msamanda", "Fusion_CIDIT_Human_Msamanda", "Fusion_HCDIT_Yeast_Msamanda", "Fusion_HCDIT_Yeast_Msamanda", "Fusion_HCDOT_Human_Msamanda", "QExactive_HCDOT_Human_Msamanda", "QTOF_Ecoli_Msamanda" ],
     proteomicstools  => $proteomicstools,
@@ -151,7 +153,7 @@ my $config = {
     pbs       => {
       "email"    => $email,
       "nodes"    => "1:ppn=8",
-      "walltime" => "72",
+      "walltime" => "24",
       "mem"      => "40gb"
     },
   },
@@ -165,7 +167,7 @@ my $config = {
     pbs        => {
       "email"    => $email,
       "nodes"    => "1:ppn=8",
-      "walltime" => "72",
+      "walltime" => "24",
       "mem"      => "40gb"
     },
   },
